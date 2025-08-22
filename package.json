@@ -1,0 +1,32 @@
+{
+  "name": "wp-support-pro",
+  "version": "0.1.0",
+  "description": "Build scripts for WP Support Pro assets",
+  "private": true,
+  "scripts": {
+    "start": "wp-scripts start src/admin.js",
+    "prebuild": "node -e \"require('fs').rmSync('build',{recursive:true,force:true});\"",
+    "build": "wp-scripts build src/admin.js"
+  },
+  "author": "WP Support Pro Team",
+  "license": "GPL-2.0-or-later",
+  "dependencies": {
+    "@wordpress/scripts": "^26.6.0"
+  },
+  "devDependencies": {
+    "autoprefixer": "*",
+    "fast-glob": "*",
+    "postcss": "*",
+    "postcss-custom-media": "*",
+    "postcss-extend": "*",
+    "postcss-flexbugs-fixes": "*",
+    "postcss-import": "*",
+    "postcss-media-minmax": "*",
+    "postcss-minify": "*",
+    "postcss-mixins": "*",
+    "postcss-nested": "*"
+  },
+  "browserslist": [
+    "extends @wordpress/browserslist-config"
+  ]
+}

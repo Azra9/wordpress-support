@@ -65,8 +65,29 @@ class WPSPT_Admin {
         global $post_type;
 
         if ('wpspt_ticket' === $post_type || strpos($hook, 'wpspt') !== false) {
-            wp_enqueue_style('wpspt-admin', WPSPT_PLUGIN_URL . 'assets/admin.css', [], WPSPT_VERSION);
-            wp_enqueue_script('wpspt-admin', WPSPT_PLUGIN_URL . 'assets/admin.js', ['jquery'], WPSPT_VERSION, true);
+            // Always load processed admin assets from build
+            $build_dir = WPSPT_PLUGIN_DIR . 'build/';
+            $style_url = WPSPT_PLUGIN_URL . 'build/admin.css';
+            $script_url = WPSPT_PLUGIN_URL . 'build/admin.js';
+
+            $deps = ['jquery'];
+            $ver  = WPSPT_VERSION;
+
+            $asset_file = $build_dir . 'admin.asset.php';
+            if (file_exists($asset_file)) {
+                $asset = include $asset_file;
+                if (is_array($asset)) {
+                    if (!empty($asset['dependencies']) && is_array($asset['dependencies'])) {
+                        $deps = array_unique(array_merge($deps, $asset['dependencies']));
+                    }
+                    if (!empty($asset['version'])) {
+                        $ver = $asset['version'];
+                    }
+                }
+            }
+
+            wp_enqueue_style('wpspt-admin', $style_url, [], $ver);
+            wp_enqueue_script('wpspt-admin', $script_url, $deps, $ver, true);
 
             wp_localize_script('wpspt-admin', 'wpsptAdmin', [
                 'ajaxUrl' => admin_url('admin-ajax.php'),

@@ -84,52 +84,6 @@ add_action('plugins_loaded', function() {
     WPSPT_Client_Dashboard::init();
 });
 
-// Frontend assets enqueue (only for dashboard shortcode render)
-function wpspt_enqueue_assets() {
-    // Determine CSS file (supports either build/style.css or build/style-index.css)
-    $style_path_main = WPSPT_PLUGIN_DIR . 'build/style.css';
-    $style_path_alt  = WPSPT_PLUGIN_DIR . 'build/style-index.css';
-    if (file_exists($style_path_main)) {
-        $style_url = WPSPT_PLUGIN_URL . 'build/style.css';
-    } elseif (file_exists($style_path_alt)) {
-        $style_url = WPSPT_PLUGIN_URL . 'build/style-index.css';
-    } else {
-        // Fallback to old location if present
-        $style_url = WPSPT_PLUGIN_URL . 'build/css/style.css';
-    }
-
-    // Determine JS file (prefer new build/app.js, fallback to legacy build/js/app.js)
-    $script_path_main = WPSPT_PLUGIN_DIR . 'build/app.js';
-    $script_path_alt  = WPSPT_PLUGIN_DIR . 'build/js/app.js';
-    if (file_exists($script_path_main)) {
-        $script_url = WPSPT_PLUGIN_URL . 'build/app.js';
-    } elseif (file_exists($script_path_alt)) {
-        $script_url = WPSPT_PLUGIN_URL . 'build/js/app.js';
-    } else {
-        $script_url = WPSPT_PLUGIN_URL . 'build/app.js';
-    }
-
-    $deps = ['jquery'];
-    $ver  = WPSPT_VERSION;
-
-    $asset_file = WPSPT_PLUGIN_DIR . 'build/app.asset.php';
-    if (file_exists($asset_file)) {
-        $asset = include $asset_file;
-        if (is_array($asset)) {
-            if (!empty($asset['dependencies']) && is_array($asset['dependencies'])) {
-                $deps = array_unique(array_merge($deps, $asset['dependencies']));
-            }
-            if (!empty($asset['version'])) {
-                $ver = $asset['version'];
-            }
-        }
-    }
-
-    wp_register_style('wpspt-style', $style_url, [], $ver);
-    wp_register_script('wpspt-app', $script_url, $deps, $ver, true);
-}
-add_action('wp_enqueue_scripts', 'wpspt_enqueue_assets');
-
 // Utility: capability check for dashboard access
 function wpspt_current_user_can_access_dashboard() {
     if (!is_user_logged_in()) return false;

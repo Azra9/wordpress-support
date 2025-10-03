@@ -1,2 +1,2 @@
-import './admin.css';
-import './client/create-ticket.js';
+import './admin/admin.css';
+import './admin/admin-ticket';

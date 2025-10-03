@@ -4,7 +4,7 @@
   "description": "Build scripts for WP Support Pro assets",
   "private": true,
   "scripts": {
-    "start": "wp-scripts start src/admin.js",
+    "start": "wp-scripts start src/admin.js src/frontend.js",
     "prebuild": "node -e \"require('fs').rmSync('build',{recursive:true,force:true});\"",
     "build": "wp-scripts build src/admin.js"
   },

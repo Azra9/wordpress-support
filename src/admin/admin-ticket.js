@@ -1,3 +1,4 @@
+
 jQuery(document).ready(function($) {
     'use strict';
 
@@ -17,11 +18,11 @@ jQuery(document).ready(function($) {
         statusSpan.text('Sending...').css('color', '#666');
 
         $.ajax({
-            url: wpsptAdmin.ajaxUrl,
+            url: (typeof wpsptAdmin !== 'undefined' ? wpsptAdmin.ajaxUrl : ajaxurl),
             type: 'POST',
             data: {
                 action: 'wpspt_admin_add_reply',
-                nonce: wpsptAdmin.nonce,
+                nonce: (typeof wpsptAdmin !== 'undefined' ? wpsptAdmin.nonce : ''),
                 ticket_id: ticketId,
                 message: message
             },
@@ -32,7 +33,7 @@ jQuery(document).ready(function($) {
                         location.reload();
                     }, 1000);
                 } else {
-                    statusSpan.text('Error: ' + response.data.message).css('color', 'red');
+                    statusSpan.text('Error: ' + (response.data && response.data.message ? response.data.message : 'Unknown error')).css('color', 'red');
                     btn.prop('disabled', false);
                 }
             },
@@ -49,11 +50,11 @@ jQuery(document).ready(function($) {
         var newStatus = $(this).val();
 
         $.ajax({
-            url: wpsptAdmin.ajaxUrl,
+            url: (typeof wpsptAdmin !== 'undefined' ? wpsptAdmin.ajaxUrl : ajaxurl),
             type: 'POST',
             data: {
                 action: 'wpspt_admin_update_status',
-                nonce: wpsptAdmin.nonce,
+                nonce: (typeof wpsptAdmin !== 'undefined' ? wpsptAdmin.nonce : ''),
                 ticket_id: ticketId,
                 status: newStatus
             },

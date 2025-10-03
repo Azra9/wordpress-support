@@ -1,0 +1,234 @@
+/* Admin Styles for WP Support Ticket System */
+
+/* Ticket List Columns */
+.wpspt-status-badge {
+    display: inline-block;
+    padding: 4px 10px;
+    border-radius: 3px;
+    font-size: 12px;
+    font-weight: 500;
+}
+
+.wpspt-status-badge.wpspt-status-open {
+    background: #e7f3ff;
+    color: #0066cc;
+}
+
+.wpspt-status-badge.wpspt-status-in-progress {
+    background: #fff3cd;
+    color: #856404;
+}
+
+.wpspt-status-badge.wpspt-status-resolved {
+    background: #d4edda;
+    color: #155724;
+}
+
+.wpspt-status-badge.wpspt-status-closed {
+    background: #e2e3e5;
+    color: #383d41;
+}
+
+/* Metabox Styles */
+.wpspt-details-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.wpspt-details-table th {
+    width: 150px;
+    text-align: left;
+    padding: 10px;
+    background: #f5f5f5;
+    font-weight: 600;
+    border-bottom: 1px solid #ddd;
+}
+
+.wpspt-details-table td {
+    padding: 10px;
+    border-bottom: 1px solid #ddd;
+}
+
+/* Conversation Styles */
+.wpspt-conversation-container {
+    padding: 10px;
+}
+
+.wpspt-conversation-messages {
+    max-height: 400px;
+    overflow-y: auto;
+    margin-bottom: 20px;
+    padding: 15px;
+    background: #f9f9f9;
+    border-radius: 6px;
+    border: 1px solid #ddd;
+}
+
+.wpspt-message {
+    margin-bottom: 15px;
+    padding: 12px;
+    border-radius: 6px;
+    border-left: 4px solid #ccc;
+    background: #fff;
+}
+
+.wpspt-message-admin {
+    background: #e7f3ff;
+    border-left-color: #2271b1;
+}
+
+.wpspt-message-client {
+    background: #fff;
+    border-left-color: #999;
+}
+
+.wpspt-message-header {
+    margin-bottom: 8px;
+    font-size: 13px;
+    color: #666;
+}
+
+.wpspt-message-header strong {
+    color: #333;
+    font-size: 14px;
+}
+
+.wpspt-message-content {
+    margin: 0;
+    color: #333;
+    line-height: 1.6;
+}
+
+.wpspt-badge {
+    padding: 3px 8px;
+    background: #2271b1;
+    color: white;
+    border-radius: 3px;
+    font-size: 11px;
+    margin-left: 5px;
+    font-weight: 600;
+}
+
+.wpspt-message-date {
+    float: right;
+    font-size: 12px;
+    color: #999;
+}
+
+.wpspt-conversation-reply {
+    padding: 15px;
+    background: #fff;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+}
+
+.wpspt-conversation-reply h4 {
+    margin-top: 0;
+    margin-bottom: 10px;
+}
+
+.wpspt-conversation-reply textarea {
+    width: 100%;
+    margin-bottom: 10px;
+    padding: 8px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-family: inherit;
+}
+
+.wpspt-reply-status {
+    margin-left: 10px;
+    font-weight: 500;
+}
+
+/* Credentials Box */
+.wpspt-credentials-box {
+    padding: 10px;
+}
+
+.wpspt-credential-item {
+    margin-bottom: 15px;
+    padding-bottom: 15px;
+    border-bottom: 1px solid #eee;
+}
+
+.wpspt-credential-item:last-child {
+    border-bottom: none;
+}
+
+.wpspt-credential-item strong {
+    display: block;
+    margin-bottom: 5px;
+    color: #333;
+}
+
+.wpspt-credential-item p {
+    margin: 5px 0;
+}
+
+.wpspt-credential-item code {
+    background: #f0f0f0;
+    padding: 6px 10px;
+    border-radius: 3px;
+    font-size: 13px;
+    display: inline-block;
+}
+
+.wpspt-credential-item a {
+    color: #2271b1;
+    text-decoration: none;
+}
+
+.wpspt-credential-item a:hover {
+    text-decoration: underline;
+}
+
+.wpspt-show-password {
+    margin-top: 5px;
+}
+
+/* Status Box */
+.wpspt-status-box {
+    padding: 10px;
+}
+
+.wpspt-status-box label {
+    display: block;
+    margin-bottom: 8px;
+}
+
+/* Settings Page */
+.wpspt-settings-section {
+    margin: 20px 0;
+    padding: 20px;
+    background: #fff;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+}
+
+/* No Messages */
+.wpspt-no-messages {
+    text-align: center;
+    color: #999;
+    padding: 40px 20px;
+    font-style: italic;
+}
+
+/* Credits Management */
+.wpspt-credits-edit-row td {
+    padding: 15px;
+    background: #f9f9f9;
+}
+
+/* Responsive */
+@media screen and (max-width: 782px) {
+    .wpspt-details-table th,
+    .wpspt-details-table td {
+        display: block;
+        width: 100%;
+    }
+
+    .wpspt-details-table th {
+        border-bottom: none;
+    }
+}

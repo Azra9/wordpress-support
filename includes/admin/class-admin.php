@@ -23,10 +23,16 @@ class WPSPT_Admin {
         add_action('wp_ajax_wpspt_admin_add_reply', [__CLASS__, 'ajax_admin_add_reply']);
         add_action('wp_ajax_wpspt_admin_update_status', [__CLASS__, 'ajax_admin_update_status']);
         add_action('wp_ajax_wpspt_admin_add_credits', [__CLASS__, 'ajax_admin_add_credits']);
+        add_action('wp_ajax_wpspt_update_user_credits', [__CLASS__, 'ajax_update_user_credits']);
 
         // Custom columns
         add_filter('manage_wpspt_ticket_posts_columns', [__CLASS__, 'ticket_columns']);
         add_action('manage_wpspt_ticket_posts_custom_column', [__CLASS__, 'ticket_column_content'], 10, 2);
+
+        // User list credits column
+        add_filter('manage_users_columns', [__CLASS__, 'add_user_credits_column']);
+        add_filter('manage_users_custom_column', [__CLASS__, 'display_user_credits_column'], 10, 3);
+        add_action('admin_footer-users.php', [__CLASS__, 'add_user_credits_inline_edit']);
     }
 
     /**
@@ -615,5 +621,176 @@ class WPSPT_Admin {
         WPSPT_Database::update_user_credits($user_id, $credits);
 
         wp_send_json_success(['message' => __('Credits updated successfully.', 'wpspt')]);
+    }
+
+    /**
+     * AJAX: Update user credits from user list
+     */
+    public static function ajax_update_user_credits() {
+        check_ajax_referer('wpspt_user_credits_nonce', 'nonce');
+
+        if (!current_user_can('manage_options')) {
+            wp_send_json_error(['message' => __('Permission denied.', 'wpspt')]);
+        }
+
+        $user_id = intval($_POST['user_id']);
+        $credits = intval($_POST['credits']);
+
+        WPSPT_Database::update_user_credits($user_id, $credits);
+
+        wp_send_json_success([
+            'message' => __('Credits updated successfully.', 'wpspt'),
+            'credits' => $credits
+        ]);
+    }
+
+    /**
+     * Add credits column to user list
+     */
+    public static function add_user_credits_column($columns) {
+        $columns['wpspt_credits'] = __('Support Credits', 'wpspt');
+        return $columns;
+    }
+
+    /**
+     * Display credits in user list column
+     */
+    public static function display_user_credits_column($value, $column_name, $user_id) {
+        if ($column_name === 'wpspt_credits') {
+            $credits = WPSPT_Database::get_user_credits($user_id);
+            return '<span class="wpspt-user-credits" data-user-id="' . esc_attr($user_id) . '">' . esc_html($credits) . '</span> ' .
+                   '<a href="#" class="wpspt-edit-user-credits button button-small" data-user-id="' . esc_attr($user_id) . '" data-credits="' . esc_attr($credits) . '">' . __('Edit', 'wpspt') . '</a>';
+        }
+        return $value;
+    }
+
+    /**
+     * Add inline edit script and styles for user credits
+     */
+    public static function add_user_credits_inline_edit() {
+        ?>
+        <style>
+            .wpspt-user-credits {
+                font-weight: bold;
+                display: inline-block;
+                min-width: 30px;
+                margin-right: 5px;
+            }
+            .wpspt-credits-edit-form {
+                display: inline-block;
+                margin-left: 10px;
+            }
+            .wpspt-credits-edit-form input[type="number"] {
+                width: 80px;
+                margin-right: 5px;
+            }
+        </style>
+
+        <script type="text/javascript">
+        jQuery(document).ready(function($) {
+            var currentEditRow = null;
+
+            // Edit button click
+            $(document).on('click', '.wpspt-edit-user-credits', function(e) {
+                e.preventDefault();
+
+                // Close any open edit forms
+                if (currentEditRow) {
+                    currentEditRow.find('.wpspt-credits-edit-form').remove();
+                    currentEditRow.find('.wpspt-edit-user-credits').show();
+                }
+
+                var btn = $(this);
+                var userId = btn.data('user-id');
+                var credits = btn.data('credits');
+                var row = btn.closest('td');
+
+                // Hide edit button
+                btn.hide();
+
+                // Create inline edit form
+                var form = $('<span class="wpspt-credits-edit-form"></span>');
+                var input = $('<input type="number" value="' + credits + '" min="0" step="1">');
+                var saveBtn = $('<button type="button" class="button button-small button-primary wpspt-save-credits">' + '<?php echo esc_js(__('Save', 'wpspt')); ?>' + '</button>');
+                var cancelBtn = $('<button type="button" class="button button-small wpspt-cancel-credits">' + '<?php echo esc_js(__('Cancel', 'wpspt')); ?>' + '</button>');
+                var spinner = $('<span class="spinner" style="float:none;margin:0 5px;"></span>');
+
+                form.append(input).append(saveBtn).append(cancelBtn).append(spinner);
+                row.append(form);
+
+                currentEditRow = row;
+
+                // Focus input
+                input.focus().select();
+
+                // Save button
+                saveBtn.on('click', function() {
+                    var newCredits = parseInt(input.val());
+                    if (isNaN(newCredits) || newCredits < 0) {
+                        alert('<?php echo esc_js(__('Please enter a valid number.', 'wpspt')); ?>');
+                        return;
+                    }
+
+                    spinner.addClass('is-active');
+                    saveBtn.prop('disabled', true);
+                    cancelBtn.prop('disabled', true);
+
+                    $.ajax({
+                        url: ajaxurl,
+                        type: 'POST',
+                        data: {
+                            action: 'wpspt_update_user_credits',
+                            nonce: '<?php echo wp_create_nonce('wpspt_user_credits_nonce'); ?>',
+                            user_id: userId,
+                            credits: newCredits
+                        },
+                        success: function(response) {
+                            if (response.success) {
+                                row.find('.wpspt-user-credits').text(response.data.credits);
+                                btn.data('credits', response.data.credits);
+                                form.remove();
+                                btn.show();
+                                currentEditRow = null;
+                            } else {
+                                alert(response.data.message || '<?php echo esc_js(__('Failed to update credits.', 'wpspt')); ?>');
+                                spinner.removeClass('is-active');
+                                saveBtn.prop('disabled', false);
+                                cancelBtn.prop('disabled', false);
+                            }
+                        },
+                        error: function() {
+                            alert('<?php echo esc_js(__('An error occurred.', 'wpspt')); ?>');
+                            spinner.removeClass('is-active');
+                            saveBtn.prop('disabled', false);
+                            cancelBtn.prop('disabled', false);
+                        }
+                    });
+                });
+
+                // Cancel button
+                cancelBtn.on('click', function() {
+                    form.remove();
+                    btn.show();
+                    currentEditRow = null;
+                });
+
+                // Enter key to save
+                input.on('keypress', function(e) {
+                    if (e.which === 13) {
+                        e.preventDefault();
+                        saveBtn.click();
+                    }
+                });
+
+                // Escape key to cancel
+                input.on('keyup', function(e) {
+                    if (e.which === 27) {
+                        cancelBtn.click();
+                    }
+                });
+            });
+        });
+        </script>
+        <?php
     }
 }

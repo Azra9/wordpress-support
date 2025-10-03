@@ -36,8 +36,12 @@ class WPSPT_Client_Dashboard {
         wp_enqueue_style('wpspt-style');
         wp_enqueue_script('wpspt-app');
 
+        // Enqueue client dashboard specific assets
+        wp_enqueue_style('wpspt-client-dashboard', WPSPT_PLUGIN_URL . 'src/client/create-ticket.css', [], WPSPT_VERSION);
+        wp_enqueue_script('wpspt-client-dashboard', WPSPT_PLUGIN_URL . 'src/client/create-ticket.js', ['jquery'], WPSPT_VERSION, true);
+
         // Localize script with data
-        wp_localize_script('wpspt-app', 'wpsptData', [
+        wp_localize_script('wpspt-client-dashboard', 'wpsptData', [
             'ajaxUrl' => admin_url('admin-ajax.php'),
             'nonce' => wp_create_nonce('wpspt_nonce'),
             'userId' => get_current_user_id(),
@@ -190,81 +194,6 @@ class WPSPT_Client_Dashboard {
             </div>
 
         </div>
-
-        <style>
-            .wpspt-dashboard { max-width: 1200px; margin: 20px auto; padding: 20px; }
-            .wpspt-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px; }
-            .wpspt-credits { background: #f0f0f0; padding: 10px 20px; border-radius: 5px; }
-            .wpspt-credits-count { font-weight: bold; font-size: 20px; color: #2271b1; }
-            .wpspt-tabs { display: flex; gap: 10px; margin-bottom: 20px; border-bottom: 2px solid #ddd; }
-            .wpspt-tab-btn { background: none; border: none; padding: 10px 20px; cursor: pointer; font-size: 16px; border-bottom: 3px solid transparent; }
-            .wpspt-tab-btn.active { border-bottom-color: #2271b1; font-weight: bold; }
-            .wpspt-tab-content { display: none; }
-            .wpspt-tab-content.active { display: block; }
-            .wpspt-form-group { margin-bottom: 20px; }
-            .wpspt-form-group label { display: block; margin-bottom: 5px; font-weight: bold; }
-            .wpspt-form-group input, .wpspt-form-group select, .wpspt-form-group textarea { width: 100%; padding: 8px; border: 1px solid #ddd; border-radius: 4px; }
-            .wpspt-help-text { font-size: 13px; color: #666; margin-top: 5px; }
-            .wpspt-credentials-section { background: #f9f9f9; padding: 20px; border-radius: 5px; margin-bottom: 20px; }
-            .wpspt-btn { padding: 10px 20px; border: none; border-radius: 4px; cursor: pointer; font-size: 14px; }
-            .wpspt-btn-primary { background: #2271b1; color: white; }
-            .wpspt-btn-primary:hover { background: #135e96; }
-            .wpspt-tickets-table { width: 100%; border-collapse: collapse; }
-            .wpspt-tickets-table th, .wpspt-tickets-table td { padding: 12px; text-align: left; border-bottom: 1px solid #ddd; }
-            .wpspt-tickets-table th { background: #f5f5f5; font-weight: bold; }
-            .wpspt-status { padding: 4px 10px; border-radius: 3px; font-size: 12px; }
-            .wpspt-status-open { background: #e7f3ff; color: #0066cc; }
-            .wpspt-status-in-progress { background: #fff3cd; color: #856404; }
-            .wpspt-status-resolved { background: #d4edda; color: #155724; }
-            .wpspt-status-closed { background: #e2e3e5; color: #383d41; }
-            .wpspt-message { padding: 10px; margin-top: 15px; border-radius: 4px; }
-            .wpspt-message.success { background: #d4edda; color: #155724; }
-            .wpspt-message.error { background: #f8d7da; color: #721c24; }
-            .required { color: red; }
-        </style>
-
-        <script>
-        jQuery(document).ready(function($) {
-            // Tab switching
-            $('.wpspt-tab-btn').on('click', function() {
-                var tab = $(this).data('tab');
-                $('.wpspt-tab-btn').removeClass('active');
-                $(this).addClass('active');
-                $('.wpspt-tab-content').removeClass('active');
-                $('#' + tab + '-tab').addClass('active');
-            });
-
-            // Submit ticket form
-            $('#wpspt-new-ticket-form').on('submit', function(e) {
-                e.preventDefault();
-
-                var formData = {
-                    action: 'wpspt_submit_ticket',
-                    nonce: wpsptData.nonce,
-                    title: $('#ticket-title').val(),
-                    description: $('#ticket-description').val(),
-                    ticket_type: $('#ticket-type').val(),
-                    site_url: $('#site-url').val(),
-                    admin_url: $('#admin-url').val(),
-                    wp_username: $('#wp-username').val(),
-                    wp_password: $('#wp-password').val(),
-                    credentials_notes: $('#credentials-notes').val()
-                };
-
-                $.post(wpsptData.ajaxUrl, formData, function(response) {
-                    if (response.success) {
-                        $('.wpspt-message').removeClass('error').addClass('success').text(response.data.message).show();
-                        $('#wpspt-new-ticket-form')[0].reset();
-                        setTimeout(function() {
-                            location.reload();
-                        }, 2000);
-                    } else {
-                        $('.wpspt-message').removeClass('success').addClass('error').text(response.data.message).show();
-                    }
-                });
-            });
-        });
-        </script>
         <?php
     }
 

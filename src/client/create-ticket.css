@@ -1,0 +1,30 @@
+/* Client Dashboard Styles */
+.wpspt-dashboard { max-width: 1200px; margin: 20px auto; padding: 20px; }
+.wpspt-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px; }
+.wpspt-credits { background: #f0f0f0; padding: 10px 20px; border-radius: 5px; }
+.wpspt-credits-count { font-weight: bold; font-size: 20px; color: #2271b1; }
+.wpspt-tabs { display: flex; gap: 10px; margin-bottom: 20px; border-bottom: 2px solid #ddd; }
+.wpspt-tab-btn { background: none; border: none; padding: 10px 20px; cursor: pointer; font-size: 16px; border-bottom: 3px solid transparent; }
+.wpspt-tab-btn.active { border-bottom-color: #2271b1; font-weight: bold; }
+.wpspt-tab-content { display: none; }
+.wpspt-tab-content.active { display: block; }
+.wpspt-form-group { margin-bottom: 20px; }
+.wpspt-form-group label { display: block; margin-bottom: 5px; font-weight: bold; }
+.wpspt-form-group input, .wpspt-form-group select, .wpspt-form-group textarea { width: 100%; padding: 8px; border: 1px solid #ddd; border-radius: 4px; }
+.wpspt-help-text { font-size: 13px; color: #666; margin-top: 5px; }
+.wpspt-credentials-section { background: #f9f9f9; padding: 20px; border-radius: 5px; margin-bottom: 20px; }
+.wpspt-btn { padding: 10px 20px; border: none; border-radius: 4px; cursor: pointer; font-size: 14px; }
+.wpspt-btn-primary { background: #2271b1; color: white; }
+.wpspt-btn-primary:hover { background: #135e96; }
+.wpspt-tickets-table { width: 100%; border-collapse: collapse; }
+.wpspt-tickets-table th, .wpspt-tickets-table td { padding: 12px; text-align: left; border-bottom: 1px solid #ddd; }
+.wpspt-tickets-table th { background: #f5f5f5; font-weight: bold; }
+.wpspt-status { padding: 4px 10px; border-radius: 3px; font-size: 12px; }
+.wpspt-status-open { background: #e7f3ff; color: #0066cc; }
+.wpspt-status-in-progress { background: #fff3cd; color: #856404; }
+.wpspt-status-resolved { background: #d4edda; color: #155724; }
+.wpspt-status-closed { background: #e2e3e5; color: #383d41; }
+.wpspt-message { padding: 10px; margin-top: 15px; border-radius: 4px; }
+.wpspt-message.success { background: #d4edda; color: #155724; }
+.wpspt-message.error { background: #f8d7da; color: #721c24; }
+.required { color: red; }
